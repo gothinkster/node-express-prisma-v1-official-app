@@ -64,4 +64,5 @@ model User {
   followedBy User[]    @relation("UserFollows", references: [id])
   following  User[]    @relation("UserFollows", references: [id])
   comments   Comment[]
+  demo       Boolean   @default(false)
 }

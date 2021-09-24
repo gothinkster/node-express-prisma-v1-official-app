@@ -1,12 +1,21 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
+import { CronJob } from 'cron';
+import rateLimit from 'express-rate-limit';
 import bodyParser from 'body-parser';
+import prisma from '../prisma/prisma-client';
 import routes from './routes/routes';
+import { generateFakeData } from './utils/cron';
 import HttpException from './models/http-exception.model';
 import swaggerDocument from '../docs/swagger.json';
 
 const app = express();
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 500,
+});
 
 /**
  * App Configuration
@@ -26,6 +35,9 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// only apply to requests that begin with /api/
+app.use('/api/', apiLimiter);
+
 app.get('/api-docs', (req: Request, res: Response) => {
   res.json({
     swagger:
@@ -43,6 +55,31 @@ app.use((err: Error | HttpException, req: Request, res: Response, next: NextFunc
     res.status(404).send(`error: 404 Not Found ${req.path}`);
   }
 });
+
+const production = process.env.NODE_ENV === 'production';
+if (production) {
+  // triggered on Sundays at 12AM
+  const job = new CronJob('00 00 12 * * 0', async () => {
+    await prisma.article.deleteMany({
+      where: {
+        author: {
+          demo: false,
+        },
+      },
+    });
+    await prisma.comment.deleteMany({
+      where: {
+        author: {
+          demo: false,
+        },
+      },
+    });
+    await prisma.tag.deleteMany({});
+  });
+  job.start();
+
+  generateFakeData();
+}
 
 /**
  * Server activation

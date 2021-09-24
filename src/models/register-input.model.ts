@@ -4,4 +4,5 @@ export interface RegisterInput {
   password: string;
   image?: string;
   bio?: string;
+  demo?: boolean;
 }

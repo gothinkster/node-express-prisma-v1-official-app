@@ -15,6 +15,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
         followedBy: [],
       };
 
@@ -51,6 +52,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
         followedBy: [],
       };
 
@@ -62,6 +64,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
         followedBy: [],
       };
 
@@ -100,6 +103,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
         followedBy: [],
       };
 
@@ -111,6 +115,7 @@ describe('ProfileService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
         followedBy: [],
       };
 

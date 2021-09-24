@@ -9,6 +9,12 @@ const buildFindAllQuery = (query: any, username: string | undefined) => {
   const orAuthorQuery = [];
   const andAuthorQuery = [];
 
+  orAuthorQuery.push({
+    demo: {
+      equals: true,
+    },
+  });
+
   if (username) {
     orAuthorQuery.push({
       username: {
@@ -410,6 +416,12 @@ export const deleteArticle = async (slug: string) => {
 
 export const getCommentsByArticle = async (slug: string, username?: string) => {
   const queries = [];
+
+  queries.push({
+    author: {
+      demo: true,
+    },
+  });
 
   if (username) {
     queries.push({

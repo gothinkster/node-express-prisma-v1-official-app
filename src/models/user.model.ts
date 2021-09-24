@@ -13,4 +13,5 @@ export interface User {
   followedBy: User[];
   following: User[];
   comments: Comment[];
+  demo: boolean;
 }

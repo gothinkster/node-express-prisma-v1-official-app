@@ -34,6 +34,7 @@ describe('ArticleService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       const mockedArticleResponse = {
@@ -83,6 +84,7 @@ describe('ArticleService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       const mockedArticleResponse = {

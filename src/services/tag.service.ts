@@ -2,6 +2,7 @@ import prisma from '../../prisma/prisma-client';
 
 const getTags = async (username?: string): Promise<string[]> => {
   const queries = [];
+  queries.push({ demo: true });
 
   if (username) {
     queries.push({

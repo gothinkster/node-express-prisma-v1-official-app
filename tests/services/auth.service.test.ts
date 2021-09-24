@@ -21,6 +21,7 @@ describe('AuthService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       // When
@@ -89,6 +90,7 @@ describe('AuthService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       // When
@@ -118,6 +120,7 @@ describe('AuthService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       // When
@@ -183,6 +186,7 @@ describe('AuthService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       // When
@@ -207,6 +211,7 @@ describe('AuthService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       // When
@@ -235,6 +240,7 @@ describe('AuthService', () => {
         bio: null,
         image: null,
         token: '',
+        demo: false,
       };
 
       // When
