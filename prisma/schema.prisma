@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["orderByAggregateGroup", "selectRelationCount", "referentialActions"]
+}
+
+model Article {
+  id          Int           @id @default(autoincrement())
+  slug        String        @unique
+  title       String
+  description String
+  body        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now())
+  tagList     ArticleTags[]
+  author      User          @relation("UserArticles", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    Int
+  favoritedBy User[]        @relation("UserFavorites", references: [id])
+  comments    Comment[]
+}
+
+model ArticleTags {
+  article   Article @relation(fields: [articleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  articleId Int
+  tag       Tag     @relation(fields: [tagId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  tagId     Int
+
+  @@id([articleId, tagId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  body      String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId Int
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  Int
+}
+
+model Tag {
+  id       Int           @id @default(autoincrement())
+  name     String
+  articles ArticleTags[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  username   String    @unique
+  password   String
+  image      String?   @default("https://realworld-temp-api.herokuapp.com/images/smiley-cyrus.jpeg")
+  bio        String?
+  articles   Article[] @relation("UserArticles")
+  favorites  Article[] @relation("UserFavorites", references: [id])
+  followedBy User[]    @relation("UserFollows", references: [id])
+  following  User[]    @relation("UserFollows", references: [id])
+  comments   Comment[]
+}

@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        run: npm ci --no-audit --prefer-offline --progress=false
+      - name: Check prettier
+        run: npm run prettier:check
+      - name: Check ESLinter
+        run: npm run lint:check
+      - name: Check unit tests
+        run: npm run test --ci --lastCommit --maxWorkers=50%
+        env:
+          CI: true
