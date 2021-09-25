@@ -8,11 +8,11 @@ This repo is functionality complete.
 
 ### Clone the repository
 
-run `git clone`
+run `git clone https://github.com/gothinkster/node-express-prisma-v1-official-app.git`
 
 ### Install the dependancies
 
-> [NodeJS](https://nodejs.dev/) required
+> [NodeJS](https://nodejs.dev/) is required
 
 ```
 cd node-express-prisma-v1-official-app
@@ -25,8 +25,8 @@ npm install
 
 ### Create a server
 
-run **pgAdmin**
-create a server (Object/Create/Server)
+run **pgAdmin**  
+create a server (Object/Create/Server)  
 required fields:
 
 - name
@@ -34,7 +34,7 @@ required fields:
 
 ### Connect the created server
 
-create a _.env_ file at the root of the project
+create a _.env_ file at the root of the project  
 populate it with the url of your database
 
 ```
@@ -45,9 +45,9 @@ DATABASE_URL="postgresql://<username>:<password>@<host_name>:<port>/<database_na
 
 run `npm run dev`
 
-# Advanced usage
+## Advanced usage
 
-## Prisma
+### Prisma
 
 ### Format the Prisma schema
 
