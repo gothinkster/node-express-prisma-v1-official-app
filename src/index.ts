@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { CronJob } from 'cron';
-import rateLimit from 'express-rate-limit';
 import bodyParser from 'body-parser';
 import prisma from '../prisma/prisma-client';
 import routes from './routes/routes';
@@ -11,11 +10,6 @@ import HttpException from './models/http-exception.model';
 import swaggerDocument from '../docs/swagger.json';
 
 const app = express();
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500,
-});
 
 /**
  * App Configuration
@@ -34,9 +28,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// only apply to requests that begin with /api/
-app.use('/api/', apiLimiter);
 
 app.get('/api-docs', (req: Request, res: Response) => {
   res.json({
