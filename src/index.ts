@@ -33,7 +33,7 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ status: 'API is running on /api' });
 });
 
-app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // only apply to requests that begin with /api/
 app.use('/api/', apiLimiter);
