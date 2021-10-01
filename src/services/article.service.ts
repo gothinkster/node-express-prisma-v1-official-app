@@ -192,7 +192,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   };
 };
 
-export const creatArticle = async (article: any, username: string) => {
+export const createArticle = async (article: any, username: string) => {
   const { title, description, body, tagList } = article;
 
   if (!title) {
@@ -210,6 +210,20 @@ export const creatArticle = async (article: any, username: string) => {
   const user = await findUserIdByUsername(username);
 
   const slug = `${slugify(title)}-${user?.id}`;
+
+  const existingTitle = await prisma.article.findUnique({
+    where: {
+      slug,
+    },
+    select: {
+      slug: true,
+    },
+  });
+
+  if (existingTitle) {
+    throw new HttpException(422, { errors: { title: ['must be unique'] } });
+  }
+
   const { authorId, id, ...createdArticle } = await prisma.article.create({
     data: {
       title,
@@ -328,6 +342,24 @@ const disconnectArticlesTags = async (slug: string) => {
 };
 
 export const updateArticle = async (article: any, slug: string, username: string) => {
+  const user = await findUserIdByUsername(username);
+  const newSlug = `${slugify(article.title)}-${user?.id}`;
+
+  if (newSlug !== slug) {
+    const existingTitle = await prisma.article.findFirst({
+      where: {
+        slug: newSlug,
+      },
+      select: {
+        slug: true,
+      },
+    });
+
+    if (existingTitle) {
+      throw new HttpException(422, { errors: { title: ['must be unique'] } });
+    }
+  }
+
   const tagList = article.tagList?.length
     ? article.tagList.map((tag: string) => ({
         create: { name: tag },
@@ -343,6 +375,7 @@ export const updateArticle = async (article: any, slug: string, username: string
     },
     data: {
       ...article,
+      slug: newSlug,
       updatedAt: new Date(),
       tagList: {
         connectOrCreate: tagList,
