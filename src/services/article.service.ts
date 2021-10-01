@@ -44,9 +44,7 @@ const buildFindAllQuery = (query: any, username: string | undefined) => {
     queries.push({
       tagList: {
         some: {
-          tag: {
-            name: query.tag,
-          },
+          name: query.tag,
         },
       },
     });
@@ -84,12 +82,8 @@ export const getArticles = async (query: any, username?: string) => {
     take: Number(query.limit) || 10,
     include: {
       tagList: {
-        include: {
-          tag: {
-            select: {
-              name: true,
-            },
-          },
+        select: {
+          name: true,
         },
       },
       author: {
@@ -126,7 +120,7 @@ export const getArticles = async (query: any, username?: string) => {
   return {
     articles: articles.map(({ authorId, id, _count, favoritedBy, ...article }) => ({
       ...article,
-      tagList: article.tagList.map(tag => tag.tag.name),
+      tagList: article.tagList.map(tag => tag.name),
       favoritesCount: _count?.favoritedBy,
       favorited: favoritedBy.some(item => item.username === username),
     })),
@@ -158,12 +152,8 @@ export const getFeed = async (offset: number, limit: number, username: string) =
     take: limit || 10,
     include: {
       tagList: {
-        include: {
-          tag: {
-            select: {
-              name: true,
-            },
-          },
+        select: {
+          name: true,
         },
       },
       author: {
@@ -200,7 +190,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   return {
     articles: articles.map(({ authorId, id, _count, favoritedBy, ...article }) => ({
       ...article,
-      tagList: article.tagList.map(tag => tag.tag.name),
+      tagList: article.tagList.map(tag => tag.name),
       favoritesCount: _count?.favoritedBy,
       favorited: favoritedBy.some(item => item.username === username),
     })),
@@ -233,7 +223,10 @@ export const creatArticle = async (article: any, username: string) => {
       body,
       slug,
       tagList: {
-        create: [...tagList.map((tag: string) => ({ tag: { create: { name: tag } } }))],
+        connectOrCreate: tagList.map((tag: string) => ({
+          create: { name: tag },
+          where: { name: tag },
+        })),
       },
       author: {
         connect: {
@@ -243,12 +236,8 @@ export const creatArticle = async (article: any, username: string) => {
     },
     include: {
       tagList: {
-        include: {
-          tag: {
-            select: {
-              name: true,
-            },
-          },
+        select: {
+          name: true,
         },
       },
       author: {
@@ -269,7 +258,7 @@ export const creatArticle = async (article: any, username: string) => {
 
   return {
     ...createdArticle,
-    tagList: createdArticle.tagList.map(tag => tag.tag.name),
+    tagList: createdArticle.tagList.map(tag => tag.name),
     favoritesCount: createdArticle._count?.favoritedBy,
     favorited: createdArticle.favoritedBy.some(item => item.username === username),
   };
@@ -282,12 +271,8 @@ export const getArticle = async (slug: string, username?: string) => {
     },
     include: {
       tagList: {
-        include: {
-          tag: {
-            select: {
-              name: true,
-            },
-          },
+        select: {
+          name: true,
         },
       },
       author: {
@@ -328,17 +313,36 @@ export const getArticle = async (slug: string, username?: string) => {
     description: article?.description,
     createdAt: article?.createdAt,
     updatedAt: article?.updatedAt,
-    tagList: article?.tagList.map(tag => tag.tag.name),
+    tagList: article?.tagList.map(tag => tag.name),
     favoritesCount: article?._count?.favoritedBy,
     favorited: article?.favoritedBy.some(item => item.username === username),
     author: article?.author,
   };
 };
 
+const disconnectArticlesTags = async (slug: string) => {
+  await prisma.article.update({
+    where: {
+      slug,
+    },
+    data: {
+      tagList: {
+        set: [],
+      },
+    },
+  });
+};
+
 export const updateArticle = async (article: any, slug: string, username: string) => {
   const tagList = article.tagList?.length
-    ? article.tagList.map((tag: string) => ({ tag: { create: { name: tag } } }))
+    ? article.tagList.map((tag: string) => ({
+        create: { name: tag },
+        where: { name: tag },
+      }))
     : [];
+
+  await disconnectArticlesTags(slug);
+
   const updatedArticle = await prisma.article.update({
     where: {
       slug,
@@ -347,18 +351,13 @@ export const updateArticle = async (article: any, slug: string, username: string
       ...article,
       updatedAt: new Date(),
       tagList: {
-        deleteMany: {},
-        create: tagList,
+        connectOrCreate: tagList,
       },
     },
     include: {
       tagList: {
-        include: {
-          tag: {
-            select: {
-              name: true,
-            },
-          },
+        select: {
+          name: true,
         },
       },
       author: {
@@ -399,7 +398,7 @@ export const updateArticle = async (article: any, slug: string, username: string
     description: updatedArticle?.description,
     createdAt: updatedArticle?.createdAt,
     updatedAt: updatedArticle?.updatedAt,
-    tagList: updatedArticle?.tagList.map(tag => tag.tag.name),
+    tagList: updatedArticle?.tagList.map(tag => tag.name),
     favoritesCount: updatedArticle?._count?.favoritedBy,
     favorited: updatedArticle?.favoritedBy.some(item => item.username === username),
     author: updatedArticle?.author,
@@ -564,12 +563,8 @@ export const favoriteArticle = async (slugPayload: string, usernameAuth: string)
     },
     include: {
       tagList: {
-        include: {
-          tag: {
-            select: {
-              name: true,
-            },
-          },
+        select: {
+          name: true,
         },
       },
       author: {
@@ -605,7 +600,7 @@ export const favoriteArticle = async (slugPayload: string, usernameAuth: string)
 
   const result = {
     ...article,
-    tagList: article?.tagList.map(tag => tag.tag.name),
+    tagList: article?.tagList.map(tag => tag.name),
     favorited: article.favoritedBy.some(favorited => favorited.id === user?.id),
     favoritesCount: _count?.favoritedBy,
   } as Article;
@@ -629,12 +624,8 @@ export const unfavoriteArticle = async (slugPayload: string, usernameAuth: strin
     },
     include: {
       tagList: {
-        include: {
-          tag: {
-            select: {
-              name: true,
-            },
-          },
+        select: {
+          name: true,
         },
       },
       author: {
@@ -670,7 +661,7 @@ export const unfavoriteArticle = async (slugPayload: string, usernameAuth: strin
 
   const result = {
     ...article,
-    tagList: article?.tagList.map(tag => tag.tag.name),
+    tagList: article?.tagList.map(tag => tag.name),
     favorited: article.favoritedBy.some(favorited => favorited.id === user?.id),
     favoritesCount: _count?.favoritedBy,
   } as Article;

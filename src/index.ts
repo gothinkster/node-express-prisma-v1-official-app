@@ -43,8 +43,9 @@ app.use((err: Error | HttpException, req: Request, res: Response, next: NextFunc
     // @ts-ignore
     res.status(err.errorCode).json(err.message);
   } else if (err) {
-    res.status(404).send(`error: 404 Not Found ${req.path}`);
+    res.status(500).json(err.message);
   }
+  return res.status(404).send(`error: 404 Not Found ${req.path}`);
 });
 
 const production = process.env.NODE_ENV === 'production';
