@@ -12,14 +12,13 @@ const getTags = async (username?: string): Promise<string[]> => {
     });
   }
 
-  await prisma.tag.groupBy({
+  const tags = await prisma.tag.groupBy({
     where: {
       articles: {
+        some: {},
         every: {
-          article: {
-            author: {
-              OR: queries,
-            },
+          author: {
+            OR: queries,
           },
         },
       },
@@ -33,9 +32,7 @@ const getTags = async (username?: string): Promise<string[]> => {
     take: 10,
   });
 
-  // return tags.map(tag => tag.name);
-
-  return ['introduction', 'welcome'];
+  return tags.map(tag => tag.name);
 };
 
 export default getTags;

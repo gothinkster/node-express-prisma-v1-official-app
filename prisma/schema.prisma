@@ -12,27 +12,18 @@ generator client {
 }
 
 model Article {
-  id          Int           @id @default(autoincrement())
-  slug        String        @unique
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
   title       String
   description String
   body        String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now())
-  tagList     ArticleTags[]
-  author      User          @relation("UserArticles", fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  tagList     Tag[]
+  author      User      @relation("UserArticles", fields: [authorId], references: [id], onDelete: Cascade)
   authorId    Int
-  favoritedBy User[]        @relation("UserFavorites", references: [id])
+  favoritedBy User[]    @relation("UserFavorites", references: [id])
   comments    Comment[]
-}
-
-model ArticleTags {
-  article   Article @relation(fields: [articleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  articleId Int
-  tag       Tag     @relation(fields: [tagId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  tagId     Int
-
-  @@id([articleId, tagId])
 }
 
 model Comment {
@@ -47,9 +38,9 @@ model Comment {
 }
 
 model Tag {
-  id       Int           @id @default(autoincrement())
-  name     String
-  articles ArticleTags[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  articles Article[]
 }
 
 model User {
