@@ -1,6 +1,6 @@
 import { createUser } from '../services/auth.service';
 import { RegisteredUser } from '../models/registered-user.model';
-import { creatArticle } from '../services/article.service';
+import { createArticle } from '../services/article.service';
 
 export const generateUser = async (): Promise<RegisteredUser> =>
   createUser({
@@ -14,7 +14,7 @@ export const generateUser = async (): Promise<RegisteredUser> =>
 export const generateFakeData = async (): Promise<void> => {
   const user = await generateUser();
 
-  await creatArticle(
+  await createArticle(
     {
       title: 'Welcome to RealWorld project',
       description:

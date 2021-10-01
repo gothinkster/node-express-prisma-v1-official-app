@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import auth from '../utils/auth';
 import {
   addComment,
-  creatArticle,
+  createArticle,
   deleteArticle,
   deleteComment,
   favoriteArticle,
@@ -70,7 +70,7 @@ router.get(
  */
 router.post('/articles', auth.required, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const article = await creatArticle(req.body.article, req.user?.username as string);
+    const article = await createArticle(req.body.article, req.user?.username as string);
     res.json({ article });
   } catch (error) {
     next(error);

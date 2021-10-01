@@ -198,7 +198,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   };
 };
 
-export const creatArticle = async (article: any, username: string) => {
+export const createArticle = async (article: any, username: string) => {
   const { title, description, body, tagList } = article;
 
   if (!title) {
@@ -215,7 +215,18 @@ export const creatArticle = async (article: any, username: string) => {
 
   const user = await findUserIdByUsername(username);
 
-  const slug = slugify(title);
+  const slug = `${slugify(title)}-${user?.id}`;
+
+  const existingTitle = await prisma.article.findUnique({
+    where: {
+      slug,
+    },
+  });
+
+  if (existingTitle) {
+    throw new HttpException(422, { errors: { title: ['must be unique'] } });
+  }
+
   const { authorId, id, ...createdArticle } = await prisma.article.create({
     data: {
       title,
