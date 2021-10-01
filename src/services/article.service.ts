@@ -221,6 +221,9 @@ export const createArticle = async (article: any, username: string) => {
     where: {
       slug,
     },
+    select: {
+      slug: true,
+    },
   });
 
   if (existingTitle) {
@@ -345,6 +348,24 @@ const disconnectArticlesTags = async (slug: string) => {
 };
 
 export const updateArticle = async (article: any, slug: string, username: string) => {
+  const user = await findUserIdByUsername(username);
+  const newSlug = `${slugify(article.title)}-${user?.id}`;
+
+  if (newSlug !== slug) {
+    const existingTitle = await prisma.article.findFirst({
+      where: {
+        slug: newSlug,
+      },
+      select: {
+        slug: true,
+      },
+    });
+
+    if (existingTitle) {
+      throw new HttpException(422, { errors: { title: ['must be unique'] } });
+    }
+  }
+
   const tagList = article.tagList?.length
     ? article.tagList.map((tag: string) => ({
         create: { name: tag },
@@ -360,6 +381,7 @@ export const updateArticle = async (article: any, slug: string, username: string
     },
     data: {
       ...article,
+      slug: newSlug,
       updatedAt: new Date(),
       tagList: {
         connectOrCreate: tagList,
