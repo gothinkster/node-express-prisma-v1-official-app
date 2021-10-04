@@ -4,6 +4,9 @@
 
 This repo is functionality complete.
 
+# Deploy to Heroku
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 # Getting started
 
 ### Clone the repository
