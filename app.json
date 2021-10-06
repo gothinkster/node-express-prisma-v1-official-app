@@ -6,7 +6,7 @@
   "repository": "https://github.com/gothinkster/realworld",
   "addons": ["heroku-postgresql"],
   "env": {
-    "JWT_SECRET":{
+    "JWT_SECRET": {
       "description": "A secret key for verifying authenticated users",
       "generator": "secret"
     }
