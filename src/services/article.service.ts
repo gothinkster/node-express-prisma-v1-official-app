@@ -374,7 +374,9 @@ export const updateArticle = async (article: any, slug: string, username: string
       slug,
     },
     data: {
-      ...article,
+      title: article.title,
+      body: article.body,
+      description: article.description,
       slug: newSlug,
       updatedAt: new Date(),
       tagList: {
