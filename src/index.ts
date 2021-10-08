@@ -50,7 +50,7 @@ app.use((err: Error | HttpException, req: Request, res: Response, next: NextFunc
 const production = process.env.NODE_ENV === 'production';
 if (production) {
   // triggered on Sundays at 12AM
-  const job = new CronJob('00 00 12 * * 0', async () => {
+  const job = new CronJob('00 00 00 * * *', async () => {
     await prisma.article.deleteMany({
       where: {
         author: {
