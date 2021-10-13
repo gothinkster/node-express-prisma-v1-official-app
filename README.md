@@ -1,6 +1,6 @@
 # ![Rails Example App](media/realworld.png)
 
-> Official NodeJS codebase that adheres to the [RealWorld](https://github.com/gothinkster/realworld/tree/main/api) API spec.
+> Official NodeJS codebase that adheres to the [RealWorld](https://gothinkster.github.io/realworld/docs/specs/backend-specs/introduction) API spec.
 
 This repo is functionality complete.
 
