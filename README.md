@@ -1,8 +1,11 @@
 # ![Rails Example App](media/realworld.png)
 
-> Official NodeJS codebase that adheres to the [RealWorld](https://github.com/gothinkster/realworld/tree/main/api) API spec.
+> This branch differs from the RealWorld API specs by including [limitations](https://gothinkster.github.io/realworld/docs/specs/frontend-specs/api#api-limitations) to public-created content.
+> We encourage you to use it if you plan to host this app publicly.
 
-This repo is functionality complete.
+# Deploy to Heroku
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 # Getting started
 
