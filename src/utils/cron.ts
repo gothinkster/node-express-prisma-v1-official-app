@@ -7,7 +7,7 @@ export const generateUser = async (): Promise<RegisteredUser> =>
     username: 'Gerome',
     email: 'gerome@me',
     password: (process.env.FAKE_PASSWORD as string) || '123456',
-    image: 'https://realworld-temp-api.herokuapp.com/images/demo-avatar.png',
+    image: 'https://api.realworld.io/images/demo-avatar.png',
     demo: true,
   });
 
