@@ -29,13 +29,6 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.get('/api-docs', (req: Request, res: Response) => {
-  res.json({
-    swagger:
-      'the API documentation  is now available on https://realworld-temp-api.herokuapp.com/api',
-  });
-});
-
 /* eslint-disable */
 app.use((err: Error | HttpException, req: Request, res: Response, next: NextFunction) => {
   // @ts-ignore
