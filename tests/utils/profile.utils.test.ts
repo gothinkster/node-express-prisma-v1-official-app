@@ -6,7 +6,7 @@ describe('ProfileUtils', () => {
       // Given
       const user = {
         username: 'RealWorld',
-        bio: null,
+        bio: 'My happy life',
         image: null,
         followedBy: [],
       };
@@ -15,7 +15,7 @@ describe('ProfileUtils', () => {
       // When
       const expected = {
         username: 'RealWorld',
-        bio: null,
+        bio: 'My happy life',
         image: null,
         following: false,
       };
@@ -28,7 +28,7 @@ describe('ProfileUtils', () => {
       // Given
       const user = {
         username: 'RealWorld',
-        bio: null,
+        bio: 'My happy life',
         image: null,
         followedBy: [
           {
@@ -41,7 +41,7 @@ describe('ProfileUtils', () => {
       // When
       const expected = {
         username: 'RealWorld',
-        bio: null,
+        bio: 'My happy life',
         image: null,
         following: true,
       };
@@ -54,7 +54,7 @@ describe('ProfileUtils', () => {
       // Given
       const user = {
         username: 'RealWorld',
-        bio: null,
+        bio: 'My happy life',
         image: null,
         followedBy: [
           {
@@ -67,7 +67,7 @@ describe('ProfileUtils', () => {
       // When
       const expected = {
         username: 'RealWorld',
-        bio: null,
+        bio: 'My happy life',
         image: null,
         following: false,
       };
