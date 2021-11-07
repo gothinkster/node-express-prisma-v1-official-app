@@ -6,6 +6,7 @@ describe('ProfileService', () => {
     test('should return a following property', async () => {
       // Given
       const username = 'RealWorld';
+      const usernameAuth = 'Gerome';
 
       const mockedResponse = {
         id: 123,
@@ -22,18 +23,19 @@ describe('ProfileService', () => {
       prismaMock.user.findUnique.mockResolvedValue(mockedResponse);
 
       // Then
-      await expect(getProfile(username)).resolves.toHaveProperty('following');
+      await expect(getProfile(username, usernameAuth)).resolves.toHaveProperty('following');
     });
 
     test('should throw an error if no user is found', async () => {
       // Given
       const username = 'RealWorld';
+      const usernameAuth = 'Gerome';
 
       // When
       prismaMock.user.findUnique.mockResolvedValue(null);
 
       // Then
-      await expect(getProfile(username)).rejects.toThrowError();
+      await expect(getProfile(username, usernameAuth)).rejects.toThrowError();
     });
   });
 

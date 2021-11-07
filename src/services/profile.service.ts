@@ -3,10 +3,10 @@ import profileMapper from '../utils/profile.utils';
 import HttpException from '../models/http-exception.model';
 import { findUserIdByUsername } from './auth.service';
 
-export const getProfile = async (username: string) => {
+export const getProfile = async (usernamePayload: string, usernameAuth: string) => {
   const profile = await prisma.user.findUnique({
     where: {
-      username,
+      username: usernamePayload,
     },
     include: {
       followedBy: true,
@@ -17,7 +17,7 @@ export const getProfile = async (username: string) => {
     throw new HttpException(404, {});
   }
 
-  return profileMapper(profile, username);
+  return profileMapper(profile, usernameAuth);
 };
 
 export const followUser = async (usernamePayload: string, usernameAuth: string) => {

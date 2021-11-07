@@ -16,7 +16,7 @@ router.get(
   auth.optional,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await getProfile(req.params.username);
+      const profile = await getProfile(req.params?.username, req.user?.username as string);
       res.json({ profile });
     } catch (error) {
       next(error);
