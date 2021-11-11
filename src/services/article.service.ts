@@ -200,6 +200,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
 
 export const createArticle = async (article: any, username: string) => {
   const { title, description, body, tagList } = article;
+  const tags = Array.isArray(tagList) ? tagList : [];
 
   if (!title) {
     throw new HttpException(422, { errors: { title: ["can't be blank"] } });
@@ -237,7 +238,7 @@ export const createArticle = async (article: any, username: string) => {
       body,
       slug,
       tagList: {
-        connectOrCreate: tagList.map((tag: string) => ({
+        connectOrCreate: tags.map((tag: string) => ({
           create: { name: tag },
           where: { name: tag },
         })),
@@ -370,12 +371,13 @@ export const updateArticle = async (article: any, slug: string, username: string
     }
   }
 
-  const tagList = article.tagList?.length
-    ? article.tagList.map((tag: string) => ({
-        create: { name: tag },
-        where: { name: tag },
-      }))
-    : [];
+  const tagList =
+    Array.isArray(article.tagList) && article.tagList?.length
+      ? article.tagList.map((tag: string) => ({
+          create: { name: tag },
+          where: { name: tag },
+        }))
+      : [];
 
   await disconnectArticlesTags(slug);
 
