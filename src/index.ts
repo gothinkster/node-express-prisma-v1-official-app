@@ -58,7 +58,6 @@ if (production) {
         },
       },
     });
-    await prisma.tag.deleteMany({});
   });
   job.start();
 
