@@ -47,14 +47,18 @@ if (production) {
     await prisma.article.deleteMany({
       where: {
         author: {
-          demo: false,
+          demo: {
+            equals: false,
+          },
         },
       },
     });
     await prisma.comment.deleteMany({
       where: {
         author: {
-          demo: false,
+          demo: {
+            equals: false,
+          },
         },
       },
     });
