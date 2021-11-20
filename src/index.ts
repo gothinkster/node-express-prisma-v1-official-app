@@ -1,9 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
-import { CronJob } from 'cron';
 import bodyParser from 'body-parser';
-import prisma from '../prisma/prisma-client';
 import routes from './routes/routes';
 import { generateFakeData } from './utils/cron';
 import HttpException from './models/http-exception.model';
@@ -40,33 +38,7 @@ app.use((err: Error | HttpException, req: Request, res: Response, next: NextFunc
   }
 });
 
-const production = process.env.NODE_ENV === 'production';
-if (production) {
-  // triggered on Sundays at 12AM
-  const job = new CronJob('00 00 00 * * *', async () => {
-    await prisma.article.deleteMany({
-      where: {
-        author: {
-          demo: {
-            equals: false,
-          },
-        },
-      },
-    });
-    await prisma.comment.deleteMany({
-      where: {
-        author: {
-          demo: {
-            equals: false,
-          },
-        },
-      },
-    });
-  });
-  job.start();
-
-  generateFakeData();
-}
+generateFakeData();
 
 /**
  * Server activation
