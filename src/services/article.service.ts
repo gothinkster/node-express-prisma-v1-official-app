@@ -352,6 +352,29 @@ export const updateArticle = async (article: any, slug: string, username: string
   let newSlug = null;
   const user = await findUserIdByUsername(username);
 
+  const existingArticle = await await prisma.article.findFirst({
+    where: {
+      slug,
+    },
+    select: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+
+  if (!existingArticle) {
+    throw new HttpException(404, {});
+  }
+
+  if (existingArticle.author.username !== username) {
+    throw new HttpException(403, {
+      message: 'You are not authorized to update this article',
+    });
+  }
+
   if (article.title) {
     newSlug = `${slugify(article.title)}-${user?.id}`;
 
@@ -446,7 +469,29 @@ export const updateArticle = async (article: any, slug: string, username: string
   };
 };
 
-export const deleteArticle = async (slug: string) => {
+export const deleteArticle = async (slug: string, username: string) => {
+  const existingArticle = await await prisma.article.findFirst({
+    where: {
+      slug,
+    },
+    select: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
+  });
+
+  if (!existingArticle) {
+    throw new HttpException(404, {});
+  }
+
+  if (existingArticle.author.username !== username) {
+    throw new HttpException(403, {
+      message: 'You are not authorized to delete this article',
+    });
+  }
   await prisma.article.delete({
     where: {
       slug,
@@ -575,10 +620,23 @@ export const deleteComment = async (id: number, username: string) => {
         username,
       },
     },
+    select: {
+      author: {
+        select: {
+          username: true,
+        },
+      },
+    },
   });
 
   if (!comment) {
-    throw new HttpException(201, {});
+    throw new HttpException(404, {});
+  }
+
+  if (comment.author.username !== username) {
+    throw new HttpException(403, {
+      message: 'You are not authorized to delete this comment',
+    });
   }
 
   await prisma.comment.delete({
