@@ -15,8 +15,7 @@ const getTags = async (username?: string): Promise<string[]> => {
   const tags = await prisma.tag.findMany({
     where: {
       articles: {
-        some: {},
-        every: {
+        some: {
           author: {
             OR: queries,
           },
