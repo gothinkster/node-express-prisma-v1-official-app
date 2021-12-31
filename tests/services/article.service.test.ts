@@ -48,6 +48,12 @@ describe('ArticleService', () => {
         authorId: 456,
         tagList: [],
         favoritedBy: [],
+        author: {
+          username: 'RealWorld',
+          bio: null,
+          image: null,
+          followedBy: [],
+        },
       };
 
       // When
@@ -98,6 +104,12 @@ describe('ArticleService', () => {
         authorId: 456,
         tagList: [],
         favoritedBy: [],
+        author: {
+          username: 'RealWorld',
+          bio: null,
+          image: null,
+          followedBy: [],
+        },
       };
 
       // When
