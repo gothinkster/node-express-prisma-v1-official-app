@@ -1,8 +1,8 @@
 import slugify from 'slugify';
 import prisma from '../../prisma/prisma-client';
 import HttpException from '../models/http-exception.model';
-import { Article } from '../models/article.model';
 import { findUserIdByUsername } from './auth.service';
+import profileMapper from '../utils/profile.utils';
 
 const buildFindAllQuery = (query: any, username: string | undefined) => {
   const queries: any = [];
@@ -85,21 +85,7 @@ export const getArticles = async (query: any, username?: string) => {
           username: true,
           bio: true,
           image: true,
-        },
-      },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          body: true,
-          author: {
-            select: {
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
+          followedBy: true,
         },
       },
       favoritedBy: true,
@@ -114,6 +100,7 @@ export const getArticles = async (query: any, username?: string) => {
   return {
     articles: articles.map(({ authorId, id, _count, favoritedBy, ...article }) => ({
       ...article,
+      author: profileMapper(article.author, username),
       tagList: article.tagList.map(tag => tag.name),
       favoritesCount: _count?.favoritedBy,
       favorited: favoritedBy.some(item => item.username === username),
@@ -155,21 +142,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
           username: true,
           bio: true,
           image: true,
-        },
-      },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          body: true,
-          author: {
-            select: {
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
+          followedBy: true,
         },
       },
       favoritedBy: true,
@@ -184,6 +157,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   return {
     articles: articles.map(({ authorId, id, _count, favoritedBy, ...article }) => ({
       ...article,
+      author: profileMapper(article.author, username),
       tagList: article.tagList.map(tag => tag.name),
       favoritesCount: _count?.favoritedBy,
       favorited: favoritedBy.some(item => item.username === username),
@@ -288,21 +262,7 @@ export const getArticle = async (slug: string, username?: string) => {
           username: true,
           bio: true,
           image: true,
-        },
-      },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          body: true,
-          author: {
-            select: {
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
+          followedBy: true,
         },
       },
       favoritedBy: true,
@@ -324,7 +284,10 @@ export const getArticle = async (slug: string, username?: string) => {
     tagList: article?.tagList.map(tag => tag.name),
     favoritesCount: article?._count?.favoritedBy,
     favorited: article?.favoritedBy.some(item => item.username === username),
-    author: article?.author,
+    author: {
+      ...article?.author,
+      following: article?.author.followedBy.some(follow => follow.username === username),
+    },
   };
 };
 
@@ -398,21 +361,6 @@ export const updateArticle = async (article: any, slug: string, username: string
           username: true,
           bio: true,
           image: true,
-        },
-      },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          body: true,
-          author: {
-            select: {
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
         },
       },
       favoritedBy: true,
@@ -599,21 +547,7 @@ export const favoriteArticle = async (slugPayload: string, usernameAuth: string)
           username: true,
           bio: true,
           image: true,
-        },
-      },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          body: true,
-          author: {
-            select: {
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
+          followedBy: true,
         },
       },
       favoritedBy: true,
@@ -627,10 +561,11 @@ export const favoriteArticle = async (slugPayload: string, usernameAuth: string)
 
   const result = {
     ...article,
+    author: profileMapper(article.author, usernameAuth),
     tagList: article?.tagList.map(tag => tag.name),
     favorited: article.favoritedBy.some(favorited => favorited.id === user?.id),
     favoritesCount: _count?.favoritedBy,
-  } as Article;
+  };
 
   return result;
 };
@@ -660,21 +595,7 @@ export const unfavoriteArticle = async (slugPayload: string, usernameAuth: strin
           username: true,
           bio: true,
           image: true,
-        },
-      },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          body: true,
-          author: {
-            select: {
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
+          followedBy: true,
         },
       },
       favoritedBy: true,
@@ -688,10 +609,11 @@ export const unfavoriteArticle = async (slugPayload: string, usernameAuth: strin
 
   const result = {
     ...article,
+    author: profileMapper(article.author, usernameAuth),
     tagList: article?.tagList.map(tag => tag.name),
     favorited: article.favoritedBy.some(favorited => favorited.id === user?.id),
     favoritesCount: _count?.favoritedBy,
-  } as Article;
+  };
 
   return result;
 };
