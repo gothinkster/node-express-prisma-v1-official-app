@@ -41,7 +41,7 @@
     "express": "^4.17.1",
     "express-jwt": "^6.1.0",
     "jsonwebtoken": "^8.5.1",
-    "slugify": "^1.6.0",
+    "slugify": "^1.6.5",
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
