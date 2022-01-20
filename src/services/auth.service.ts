@@ -146,9 +146,9 @@ export const getCurrentUser = async (username: string) => {
 
 export const updateUser = async (userPayload: any, loggedInUsername: string) => {
   const { email, username, password, image, bio } = userPayload;
-  
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+
   const user = await prisma.user.update({
     where: {
       username: loggedInUsername,
