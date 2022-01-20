@@ -112,7 +112,7 @@ export const login = async (userPayload: any) => {
         email: user.email,
         username: user.username,
         bio: user.bio,
-        image: user.bio,
+        image: user.image,
         token: generateToken(user),
       };
     }
