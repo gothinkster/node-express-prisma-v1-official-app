@@ -291,10 +291,7 @@ export const getArticle = async (slug: string, username?: string) => {
     tagList: article?.tagList.map(tag => tag.name),
     favoritesCount: article?._count?.favoritedBy,
     favorited: article?.favoritedBy.some(item => item.username === username),
-    author: {
-      ...article?.author,
-      following: article?.author.followedBy.some(follow => follow.username === username),
-    },
+    author: profileMapper(article.author, username),
   };
 };
 
