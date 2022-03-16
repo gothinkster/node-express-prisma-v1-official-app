@@ -3,6 +3,7 @@ import prisma from '../../prisma/prisma-client';
 import HttpException from '../models/http-exception.model';
 import { findUserIdByUsername } from './auth.service';
 import profileMapper from '../utils/profile.utils';
+import articleMapper from '../mappers/article.mapper';
 
 const buildFindAllQuery = (query: any, username: string | undefined) => {
   const queries: any = [];
@@ -104,13 +105,7 @@ export const getArticles = async (query: any, username?: string) => {
   });
 
   return {
-    articles: articles.map(({ authorId, id, _count, favoritedBy, ...article }) => ({
-      ...article,
-      author: profileMapper(article.author, username),
-      tagList: article.tagList.map(tag => tag.name),
-      favoritesCount: _count?.favoritedBy,
-      favorited: favoritedBy.some(item => item.username === username),
-    })),
+    articles: articles.map(article => articleMapper(article, username)),
     articlesCount,
   };
 };
@@ -161,13 +156,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   });
 
   return {
-    articles: articles.map(({ authorId, id, _count, favoritedBy, ...article }) => ({
-      ...article,
-      author: profileMapper(article.author, username),
-      tagList: article.tagList.map(tag => tag.name),
-      favoritesCount: _count?.favoritedBy,
-      favorited: favoritedBy.some(item => item.username === username),
-    })),
+    articles: articles.map(article => articleMapper(article, username)),
     articlesCount,
   };
 };
@@ -245,12 +234,7 @@ export const createArticle = async (article: any, username: string) => {
     },
   });
 
-  return {
-    ...createdArticle,
-    tagList: createdArticle.tagList.map(tag => tag.name),
-    favoritesCount: createdArticle._count?.favoritedBy,
-    favorited: createdArticle.favoritedBy.some(item => item.username === username),
-  };
+  return articleMapper(createdArticle, username);
 };
 
 export const getArticle = async (slug: string, username?: string) => {
@@ -282,21 +266,10 @@ export const getArticle = async (slug: string, username?: string) => {
   });
 
   if (!article) {
-    throw new HttpException(404, { errors: { article: ["not found"] } });
+    throw new HttpException(404, { errors: { article: ['not found'] } });
   }
 
-  return {
-    title: article.title,
-    slug: article.slug,
-    body: article.body,
-    description: article.description,
-    createdAt: article.createdAt,
-    updatedAt: article.updatedAt,
-    tagList: article.tagList.map(tag => tag.name),
-    favoritesCount: article._count?.favoritedBy,
-    favorited: article.favoritedBy.some(item => item.username === username),
-    author: profileMapper(article.author, username),
-  };
+  return articleMapper(article, username);
 };
 
 const disconnectArticlesTags = async (slug: string) => {
@@ -395,21 +368,6 @@ export const updateArticle = async (article: any, slug: string, username: string
           image: true,
         },
       },
-      comments: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          body: true,
-          author: {
-            select: {
-              username: true,
-              bio: true,
-              image: true,
-            },
-          },
-        },
-      },
       favoritedBy: true,
       _count: {
         select: {
@@ -419,18 +377,7 @@ export const updateArticle = async (article: any, slug: string, username: string
     },
   });
 
-  return {
-    title: updatedArticle?.title,
-    slug: updatedArticle?.slug,
-    body: updatedArticle?.body,
-    description: updatedArticle?.description,
-    createdAt: updatedArticle?.createdAt,
-    updatedAt: updatedArticle?.updatedAt,
-    tagList: updatedArticle?.tagList.map(tag => tag.name),
-    favoritesCount: updatedArticle?._count?.favoritedBy,
-    favorited: updatedArticle?.favoritedBy.some(item => item.username === username),
-    author: updatedArticle?.author,
-  };
+  return articleMapper(updatedArticle, username);
 };
 
 export const deleteArticle = async (slug: string, username: string) => {

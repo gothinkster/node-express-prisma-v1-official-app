@@ -1,6 +1,7 @@
 import { createUser } from '../services/auth.service';
 import { RegisteredUser } from '../models/registered-user.model';
 import { addComment, createArticle } from '../services/article.service';
+import { getProfile } from '../services/profile.service';
 
 export const generateUser = async (): Promise<RegisteredUser> =>
   createUser({
@@ -12,6 +13,11 @@ export const generateUser = async (): Promise<RegisteredUser> =>
   });
 
 export const generateFakeData = async (): Promise<void> => {
+  const existingAdmin = await getProfile('Gerome');
+  if (existingAdmin) {
+    return;
+  }
+
   const user = await generateUser();
 
   const introduction = await createArticle(
