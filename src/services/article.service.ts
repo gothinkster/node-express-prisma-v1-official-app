@@ -281,17 +281,21 @@ export const getArticle = async (slug: string, username?: string) => {
     },
   });
 
+  if (!article) {
+    throw new HttpException(404, { errors: { article: ["not found"] } });
+  }
+
   return {
-    title: article?.title,
-    slug: article?.slug,
-    body: article?.body,
-    description: article?.description,
-    createdAt: article?.createdAt,
-    updatedAt: article?.updatedAt,
-    tagList: article?.tagList.map(tag => tag.name),
-    favoritesCount: article?._count?.favoritedBy,
-    favorited: article?.favoritedBy.some(item => item.username === username),
-    author: profileMapper(article?.author, username),
+    title: article.title,
+    slug: article.slug,
+    body: article.body,
+    description: article.description,
+    createdAt: article.createdAt,
+    updatedAt: article.updatedAt,
+    tagList: article.tagList.map(tag => tag.name),
+    favoritesCount: article._count?.favoritedBy,
+    favorited: article.favoritedBy.some(item => item.username === username),
+    author: profileMapper(article.author, username),
   };
 };
 
