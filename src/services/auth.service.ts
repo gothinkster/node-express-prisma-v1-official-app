@@ -76,7 +76,7 @@ export const createUser = async (input: RegisterInput): Promise<RegisteredUser> 
 
   return {
     ...user,
-    token: generateToken(user),
+    token: generateToken(user.email),
   };
 };
 
@@ -114,7 +114,7 @@ export const login = async (userPayload: any) => {
         username: user.username,
         bio: user.bio,
         image: user.image,
-        token: generateToken(user),
+        token: generateToken(user.email),
       };
     }
   }
@@ -141,7 +141,7 @@ export const getCurrentUser = async (username: string) => {
 
   return {
     ...user,
-    token: generateToken(user),
+    token: generateToken(user.email),
   };
 };
 
@@ -174,7 +174,7 @@ export const updateUser = async (userPayload: any, loggedInUsername: string) => 
 
   return {
     ...user,
-    token: generateToken(user),
+    token: generateToken(user.email),
   };
 };
 
