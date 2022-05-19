@@ -17,8 +17,7 @@
     "prettier:write": "npx prettier --write .",
     "prettier:check": "npx prettier --check .",
     "lint:check": "npx eslint src/**/*.ts",
-    "lint:fix": "npx eslint --fix src/**/*.ts",
-    "prepare": "husky install"
+    "lint:fix": "npx eslint --fix src/**/*.ts"
   },
   "keywords": [
     "node",
