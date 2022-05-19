@@ -4,7 +4,6 @@
   "description": "Node.js, Express.js & Prisma RealWorld official app",
   "main": "index.js",
   "scripts": {
-    "postinstall": "tsc",
     "test": "jest -i",
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/index.ts dev",
     "start": "node dist/src/index.js",
