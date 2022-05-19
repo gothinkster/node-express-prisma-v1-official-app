@@ -201,7 +201,7 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       await deleteComment(Number(req.params.id), req.user?.username as string);
-      res.sendStatus(204);
+      res.status(200).json({});
     } catch (error) {
       next(error);
     }
