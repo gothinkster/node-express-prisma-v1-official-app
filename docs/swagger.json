@@ -810,7 +810,7 @@
         "email": {
           "type": "string"
         },
-        "token": {
+        "password": {
           "type": "string"
         },
         "username": {
@@ -823,7 +823,7 @@
           "type": "string"
         }
       },
-      "required": ["email", "token", "username", "bio", "image"]
+      "required": ["email", "password", "username", "bio", "image"]
     },
     "UserResponse": {
       "type": "object",
@@ -840,7 +840,7 @@
         "email": {
           "type": "string"
         },
-        "token": {
+        "password": {
           "type": "string"
         },
         "username": {
