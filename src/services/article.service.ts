@@ -521,7 +521,7 @@ export const addComment = async (body: string, slug: string, username: string) =
       username: comment.author.username,
       bio: comment.author.bio,
       image: comment.author.image,
-      following: comment.author.followedBy.some(follow => follow.id === user?.id),
+      following: comment.author.followedBy.some((follow: any) => follow.id === user?.id),
     },
   };
 };
