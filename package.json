@@ -77,5 +77,8 @@
       "npm run prettier:write",
       "git add"
     ]
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
