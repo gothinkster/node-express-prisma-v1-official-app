@@ -1,4 +1,5 @@
 import prisma from '../../prisma/prisma-client';
+import { Tag } from '../models/tag.model';
 
 const getTags = async (username?: string): Promise<string[]> => {
   const queries = [];
@@ -33,7 +34,7 @@ const getTags = async (username?: string): Promise<string[]> => {
     take: 10,
   });
 
-  return tags.map(tag => tag.name);
+  return tags.map((tag: Tag) => tag.name);
 };
 
 export default getTags;

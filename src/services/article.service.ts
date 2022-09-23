@@ -4,6 +4,7 @@ import HttpException from '../models/http-exception.model';
 import { findUserIdByUsername } from './auth.service';
 import profileMapper from '../utils/profile.utils';
 import articleMapper from '../mappers/article.mapper';
+import { Tag } from '../models/tag.model';
 
 const buildFindAllQuery = (query: any, username: string | undefined) => {
   const queries: any = [];
@@ -105,7 +106,7 @@ export const getArticles = async (query: any, username?: string) => {
   });
 
   return {
-    articles: articles.map(article => articleMapper(article, username)),
+    articles: articles.map((article: any) => articleMapper(article, username)),
     articlesCount,
   };
 };
@@ -156,7 +157,7 @@ export const getFeed = async (offset: number, limit: number, username: string) =
   });
 
   return {
-    articles: articles.map(article => articleMapper(article, username)),
+    articles: articles.map((article: any) => articleMapper(article, username)),
     articlesCount,
   };
 };
@@ -456,13 +457,13 @@ export const getCommentsByArticle = async (slug: string, username?: string) => {
     },
   });
 
-  const result = comments?.comments.map(comment => ({
+  const result = comments?.comments.map((comment: any) => ({
     ...comment,
     author: {
       username: comment.author.username,
       bio: comment.author.bio,
       image: comment.author.image,
-      following: comment.author.followedBy.some(follow => follow.username === username),
+      following: comment.author.followedBy.some((follow: any) => follow.username === username),
     },
   }));
 
@@ -599,8 +600,8 @@ export const favoriteArticle = async (slugPayload: string, usernameAuth: string)
   const result = {
     ...article,
     author: profileMapper(article.author, usernameAuth),
-    tagList: article?.tagList.map(tag => tag.name),
-    favorited: article.favoritedBy.some(favorited => favorited.id === user?.id),
+    tagList: article?.tagList.map((tag: Tag) => tag.name),
+    favorited: article.favoritedBy.some((favorited: any) => favorited.id === user?.id),
     favoritesCount: _count?.favoritedBy,
   };
 
@@ -647,8 +648,8 @@ export const unfavoriteArticle = async (slugPayload: string, usernameAuth: strin
   const result = {
     ...article,
     author: profileMapper(article.author, usernameAuth),
-    tagList: article?.tagList.map(tag => tag.name),
-    favorited: article.favoritedBy.some(favorited => favorited.id === user?.id),
+    tagList: article?.tagList.map((tag: Tag) => tag.name),
+    favorited: article.favoritedBy.some((favorited: any) => favorited.id === user?.id),
     favoritesCount: _count?.favoritedBy,
   };
 
